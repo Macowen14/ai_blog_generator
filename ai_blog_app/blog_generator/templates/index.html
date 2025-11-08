@@ -1,0 +1,347 @@
+{% extends 'base.html' %}
+
+{% block title %}Home | AI Blog Generator{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* Gradient Text */
+  .gradient-text {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* Feature Card Hover Effect */
+  .feature-card {
+    transition: all 0.3s ease;
+  }
+  .feature-card:hover {
+    transform: translateY(-8px);
+  }
+  
+  /* Pulse Animation for Button */
+  @keyframes pulse-shadow {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+    }
+    50% {
+      box-shadow: 0 0 0 15px rgba(59, 130, 246, 0);
+    }
+  }
+  
+  .btn-pulse:hover {
+    animation: pulse-shadow 1.5s infinite;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="text-center py-16 px-4">
+  <div class="inline-flex items-center justify-center mb-6 px-4 py-2 bg-blue-50 rounded-full">
+    <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+    </svg>
+    <span class="text-sm font-semibold text-blue-600">AI-Powered Content Generation</span>
+  </div>
+  
+  <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-6 tracking-tight leading-tight">
+    Turn YouTube Videos into<br/>
+    <span class="gradient-text">AI-Generated Blog Articles</span>
+  </h1>
+  
+  <p class="text-gray-600 text-lg sm:text-xl max-w-3xl mx-auto leading-relaxed">
+    Paste any YouTube link and instantly generate a structured, SEO-friendly
+    blog post using advanced AI technology in seconds.
+  </p>
+</section>
+
+<!-- Input Card -->
+<div class="max-w-2xl mx-auto bg-white shadow-2xl rounded-3xl p-8 border border-gray-100 mb-16">
+  <div class="flex items-center mb-6">
+    <div class="bg-blue-100 rounded-full p-3 mr-4">
+      <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+      </svg>
+    </div>
+    <h2 class="text-2xl font-bold text-gray-900">Generate Your Blog</h2>
+  </div>
+  
+  <form id="blog-form" class="space-y-5">
+    {% csrf_token %}
+    <div>
+      <label for="youtube_url" class="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
+        <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+        </svg>
+        YouTube Video URL
+      </label>
+      <div class="relative">
+        <input
+          id="youtube_url"
+          name="youtube_url"
+          type="url"
+          required
+          placeholder="https://www.youtube.com/watch?v=example"
+          class="w-full rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 p-4 pr-12 transition-all"
+        />
+        <svg class="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+        </svg>
+      </div>
+    </div>
+
+    <button
+      id="submit-btn"
+      type="submit"
+      class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-4 rounded-xl transition-all duration-200 flex items-center justify-center shadow-lg btn-pulse"
+    >
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+      </svg>
+      Generate Blog Article
+    </button>
+  </form>
+
+  <!-- Loader -->
+  <div
+    id="loader"
+    class="hidden mt-6 text-center flex flex-col items-center justify-center p-6 bg-blue-50 rounded-xl"
+  >
+    <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-600 mb-4"></div>
+    <p class="text-gray-700 font-medium">Analyzing video and generating your blog article...</p>
+    <p class="text-gray-500 text-sm mt-2">This may take 30-60 seconds</p>
+  </div>
+</div>
+
+<!-- Features Section -->
+<section id="features-grid" class="py-20 bg-gradient-to-b from-transparent to-blue-50/30 rounded-3xl">
+  <div class="text-center mb-12">
+    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+      Why Choose Our AI Blog Generator?
+    </h2>
+    <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+      Transform your content creation workflow with cutting-edge AI technology
+    </p>
+  </div>
+
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto px-4">
+    <!-- Feature 1 -->
+    <div class="feature-card bg-white shadow-lg hover:shadow-2xl transition-all p-8 rounded-2xl border border-gray-100">
+      <div class="bg-gradient-to-br from-blue-500 to-blue-600 w-14 h-14 rounded-xl flex items-center justify-center mb-5 shadow-lg">
+        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 mb-3">Time-Saving</h3>
+      <p class="text-gray-600 leading-relaxed">
+        Skip the note-taking and summarizing — get a full, polished article in seconds.
+      </p>
+    </div>
+
+    <!-- Feature 2 -->
+    <div class="feature-card bg-white shadow-lg hover:shadow-2xl transition-all p-8 rounded-2xl border border-gray-100">
+      <div class="bg-gradient-to-br from-purple-500 to-purple-600 w-14 h-14 rounded-xl flex items-center justify-center mb-5 shadow-lg">
+        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 mb-3">AI-Powered Intelligence</h3>
+      <p class="text-gray-600 leading-relaxed">
+        Extracts key insights, structures headings, and optimizes for readability.
+      </p>
+    </div>
+
+    <!-- Feature 3 -->
+    <div class="feature-card bg-white shadow-lg hover:shadow-2xl transition-all p-8 rounded-2xl border border-gray-100">
+      <div class="bg-gradient-to-br from-pink-500 to-pink-600 w-14 h-14 rounded-xl flex items-center justify-center mb-5 shadow-lg">
+        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 mb-3">Responsive Design</h3>
+      <p class="text-gray-600 leading-relaxed">
+        Works perfectly across all devices — from mobile phones to desktop computers.
+      </p>
+    </div>
+
+    <!-- Feature 4 -->
+    <div class="feature-card bg-white shadow-lg hover:shadow-2xl transition-all p-8 rounded-2xl border border-gray-100">
+      <div class="bg-gradient-to-br from-green-500 to-green-600 w-14 h-14 rounded-xl flex items-center justify-center mb-5 shadow-lg">
+        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 mb-3">Easy Editing</h3>
+      <p class="text-gray-600 leading-relaxed">
+        Copy, edit, and refine your AI-generated blog content instantly.
+      </p>
+    </div>
+
+    <!-- Feature 5 -->
+    <div class="feature-card bg-white shadow-lg hover:shadow-2xl transition-all p-8 rounded-2xl border border-gray-100">
+      <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 w-14 h-14 rounded-xl flex items-center justify-center mb-5 shadow-lg">
+        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 mb-3">Privacy-First</h3>
+      <p class="text-gray-600 leading-relaxed">
+        We don't store your YouTube links or any generated content on our servers.
+      </p>
+    </div>
+
+    <!-- Feature 6 -->
+    <div class="feature-card bg-white shadow-lg hover:shadow-2xl transition-all p-8 rounded-2xl border border-gray-100">
+      <div class="bg-gradient-to-br from-indigo-500 to-indigo-600 w-14 h-14 rounded-xl flex items-center justify-center mb-5 shadow-lg">
+        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 mb-3">Multi-Language Support</h3>
+      <p class="text-gray-600 leading-relaxed">
+        Generate summaries and blogs in multiple languages (coming soon).
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-16 px-4">
+  <div class="max-w-4xl mx-auto bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl shadow-2xl overflow-hidden">
+    <div class="p-12 text-center text-white">
+      <h2 class="text-3xl sm:text-4xl font-bold mb-4">Ready to Transform Your Content?</h2>
+      <p class="text-blue-100 text-lg mb-8 max-w-2xl mx-auto">
+        Join thousands of creators who are already using AI to supercharge their content creation workflow.
+      </p>
+      <a href="#youtube_url" class="inline-flex items-center px-8 py-4 bg-white text-blue-600 font-bold rounded-xl hover:bg-gray-100 transition-all shadow-lg">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+        </svg>
+        Get Started Now
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  // YouTube URL validation
+  const isValidYouTubeUrl = (url) => {
+    const patterns = [
+      /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+      /^(https?:\/\/)?(www\.)?(youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/
+    ];
+    return patterns.some(pattern => pattern.test(url));
+  };
+
+  // UI state management
+  const UI = {
+    toggleLoader(show) {
+      const loader = document.getElementById('loader');
+      const features = document.getElementById('features-grid');
+      loader.classList.toggle('hidden', !show);
+      if (show) {
+        loader.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    },
+    
+    setSubmitButton(disabled) {
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = disabled;
+      btn.classList.toggle('opacity-50', disabled);
+      btn.classList.toggle('cursor-not-allowed', disabled);
+      
+      if (disabled) {
+        btn.innerHTML = `
+          <svg class="animate-spin w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
+          Generating...
+        `;
+      } else {
+        btn.innerHTML = `
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+          </svg>
+          Generate Blog Article
+        `;
+      }
+    },
+    
+    resetForm() {
+      document.getElementById('youtube_url').value = '';
+      document.getElementById('youtube_url').focus();
+    }
+  };
+
+  // Get CSRF token
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  // Form submission handler
+  document.getElementById('blog-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const youtubeUrl = document.getElementById('youtube_url').value.trim();
+    
+    // Validate URL on client side
+    if (!isValidYouTubeUrl(youtubeUrl)) {
+      alert('Please enter a valid YouTube URL (e.g., https://www.youtube.com/watch?v=...)');
+      return;
+    }
+    
+    // Show loader
+    UI.toggleLoader(true);
+    UI.setSubmitButton(true);
+    
+    try {
+      const response = await fetch('{% url "generate_blog" %}', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ youtube_url: youtubeUrl })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
+        // Success - redirect to blogs page (Django messages will show there)
+        UI.resetForm();
+        window.location.href = '/blogs/';
+      } else {
+        // Error - reload page to show Django error messages
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+      alert('Network error. Please check your connection and try again.');
+      UI.toggleLoader(false);
+      UI.setSubmitButton(false);
+    }
+  });
+  
+  // Smooth scroll to input
+  document.querySelector('a[href="#youtube_url"]')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('youtube_url').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    document.getElementById('youtube_url').focus();
+  });
+</script>
+{% endblock %}

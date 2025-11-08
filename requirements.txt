@@ -1,0 +1,58 @@
+# --- Core Django ---
+Django==4.2.25
+asgiref==3.10.0
+sqlparse==0.5.3
+psycopg==3.2.10
+psycopg-binary==3.2.10
+
+# --- Environment & Utilities ---
+python-dotenv==1.1.1
+dj-database-url==2.3.0
+requests==2.32.3
+urllib3==2.2.3
+
+# --- Debug & Development ---
+django-debug-toolbar==6.0.0
+ipython==8.18.1
+
+# --- Async / Networking ---
+aiohttp==3.13.1
+aiosignal==1.4.0
+anyio==4.11.0
+async-timeout==5.0.1
+frozenlist==1.8.0
+multidict==6.7.0
+yarl==1.22.0
+
+# --- AI / ML / Generative Tools ---
+openai==0.27.10
+google-generativeai==0.8.5
+google-api-python-client==2.185.0
+google-auth==2.41.1
+google-auth-httplib2==0.2.0
+google-api-core==2.26.0
+googleapis-common-protos==1.70.0
+grpcio==1.75.1
+grpcio-status==1.71.2
+assemblyai==0.45.1
+genai==2.1.0
+tiktoken==0.3.3
+
+# --- Image / Media Handling ---
+pillow==11.3.0
+
+# --- Extra Tools (for uploads, CLI, etc.) ---
+tabulate==0.9.0
+tqdm==4.67.1
+typing_extensions==4.15.0
+attrs==25.1.0
+decorator==5.2.1
+traitlets==5.14.3
+
+# --- Optional YouTube / Media Parsing ---
+pytube==15.0.0
+yt-dlp==2025.10.14
+
+# --- Optional for Deployment / Packaging ---
+gunicorn==23.0.0
+whitenoise==6.7.0

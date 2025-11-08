@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-12 px-6">
+  <h1 class="text-4xl font-bold text-gray-900 mb-4">{{ blog.title }}</h1>
+
+  <div class="flex items-center text-sm text-gray-500 mb-6">
+    <span>{{ blog.created_at|date:"M j, Y" }}</span>
+    <span class="mx-2">•</span>
+    <span>{{ blog.content|striptags|wordcount }} words</span>
+  </div>
+
+  <div class="prose prose-blue max-w-none mb-8">
+    {{ blog.content|safe }}
+  </div>
+
+  <div class="flex gap-4">
+    <a href="{% url 'edit_blog' blog.id %}" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+      Edit Blog
+    </a>
+    <a href="{% url 'my_blogs' %}" class="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-100">
+      Back to Blogs
+    </a>
+  </div>
+</div>
+{% endblock %}

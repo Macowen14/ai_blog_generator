@@ -1,0 +1,266 @@
+{% extends 'base_profile.html' %}
+{% load static %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header -->
+    <div class="mb-8 fade-in">
+        <a href="{% url 'profile' %}" class="inline-flex items-center text-gray-600 hover:text-indigo-600 mb-4 transition">
+            <i class="fas fa-arrow-left mr-2"></i>Back to Profile
+        </a>
+        <h1 class="text-3xl font-bold text-gray-900">Edit Profile</h1>
+        <p class="text-gray-600 mt-2">Update your profile information and settings</p>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+        
+        <!-- Profile Picture Section -->
+        <div class="bg-white rounded-2xl shadow-lg p-8 fade-in">
+            <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                <i class="fas fa-camera mr-3 text-indigo-600"></i>Profile Picture
+            </h2>
+            
+            <div class="flex items-center space-x-6">
+                <div class="profile-image-container w-32 h-32 rounded-full border-4 border-gray-200 bg-white overflow-hidden">
+                    {% if author.profile_picture %}
+                        <img src="{{ author.profile_picture.url }}" alt="Profile" id="preview-image" class="w-full h-full object-cover">
+                    {% else %}
+                        <div id="preview-placeholder" class="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600">
+                            <span class="text-4xl font-bold text-white">{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}</span>
+                        </div>
+                        <img src="" alt="Preview" id="preview-image" class="w-full h-full object-cover hidden">
+                    {% endif %}
+                </div>
+                
+                <div class="flex-1">
+                    <label for="profile_picture" class="block text-sm font-medium text-gray-700 mb-2">
+                        Upload New Picture
+                    </label>
+                    <div class="flex items-center space-x-3">
+                        <label for="profile_picture" class="cursor-pointer inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                            <i class="fas fa-upload mr-2"></i>Choose File
+                        </label>
+                        <input type="file" id="profile_picture" name="profile_picture" accept="image/*" class="hidden" onchange="previewImage(event)">
+                        
+                        {% if author.profile_picture %}
+                        <button type="button" onclick="removeProfilePicture()" class="inline-flex items-center px-4 py-2 bg-red-50 border border-red-200 rounded-lg text-red-700 hover:bg-red-100 transition">
+                            <i class="fas fa-trash mr-2"></i>Remove
+                        </button>
+                        <input type="hidden" id="remove_picture" name="remove_picture" value="false">
+                        {% endif %}
+                    </div>
+                    <p class="text-sm text-gray-500 mt-2">
+                        <i class="fas fa-info-circle mr-1"></i>JPG, PNG or GIF. Max size 5MB
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Personal Information -->
+        <div class="bg-white rounded-2xl shadow-lg p-8 fade-in" style="animation-delay: 0.1s;">
+            <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                <i class="fas fa-user mr-3 text-indigo-600"></i>Personal Information
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="first_name" class="block text-sm font-medium text-gray-700 mb-2">
+                        First Name <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-user text-gray-400"></i>
+                        </div>
+                        <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}" required
+                            class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="last_name" class="block text-sm font-medium text-gray-700 mb-2">
+                        Last Name <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-user text-gray-400"></i>
+                        </div>
+                        <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}" required
+                            class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+                    </div>
+                </div>
+                
+                <div class="md:col-span-2">
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                        Email Address <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-envelope text-gray-400"></i>
+                        </div>
+                        <input type="email" id="email" name="email" value="{{ user.email }}" required
+                            class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+                    </div>
+                </div>
+                
+                <div class="md:col-span-2">
+                    <label for="profession" class="block text-sm font-medium text-gray-700 mb-2">
+                        Profession
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-briefcase text-gray-400"></i>
+                        </div>
+                        <input type="text" id="profession" name="profession" value="{{ author.profession|default:'' }}" placeholder="e.g., Software Developer, Content Creator"
+                            class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bio -->
+        <div class="bg-white rounded-2xl shadow-lg p-8 fade-in" style="animation-delay: 0.2s;">
+            <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                <i class="fas fa-file-alt mr-3 text-indigo-600"></i>About You
+            </h2>
+            
+            <div>
+                <label for="bio" class="block text-sm font-medium text-gray-700 mb-2">
+                    Bio
+                </label>
+                <textarea id="bio" name="bio" rows="5" placeholder="Tell us about yourself..."
+                    class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition resize-none">{{ author.bio|default:'' }}</textarea>
+                <p class="text-sm text-gray-500 mt-2">
+                    <i class="fas fa-info-circle mr-1"></i>Brief description for your profile
+                </p>
+            </div>
+        </div>
+
+        <!-- Links & Social Media -->
+        <div class="bg-white rounded-2xl shadow-lg p-8 fade-in" style="animation-delay: 0.3s;">
+            <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                <i class="fas fa-link mr-3 text-indigo-600"></i>Links & Social Media
+            </h2>
+            
+            <div class="space-y-6">
+                <div>
+                    <label for="website" class="block text-sm font-medium text-gray-700 mb-2">
+                        Website
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-globe text-gray-400"></i>
+                        </div>
+                        <input type="url" id="website" name="website" value="{{ author.website|default:'' }}" placeholder="https://yourwebsite.com"
+                            class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="social_x" class="block text-sm font-medium text-gray-700 mb-2">
+                        Twitter/X Profile
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fab fa-x-twitter text-gray-400"></i>
+                        </div>
+                        <input type="url" id="social_x" name="social_x" value="{{ author.social_x|default:'' }}" placeholder="https://twitter.com/yourusername"
+                            class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="social_github" class="block text-sm font-medium text-gray-700 mb-2">
+                        GitHub Profile
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fab fa-github text-gray-400"></i>
+                        </div>
+                        <input type="url" id="social_github" name="social_github" value="{{ author.social_github|default:'' }}" placeholder="https://github.com/yourusername"
+                            class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex items-center justify-end space-x-4 fade-in" style="animation-delay: 0.4s;">
+            <a href="{% url 'profile' %}" class="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition duration-300">
+                <i class="fas fa-times mr-2"></i>Cancel
+            </a>
+            <button type="submit" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                <i class="fas fa-save mr-2"></i>Save Changes
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Preview uploaded image
+    function previewImage(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewImg = document.getElementById('preview-image');
+                const placeholder = document.getElementById('preview-placeholder');
+                
+                previewImg.src = e.target.result;
+                previewImg.classList.remove('hidden');
+                
+                if (placeholder) {
+                    placeholder.classList.add('hidden');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    // Remove profile picture
+    function removeProfilePicture() {
+        if (confirm('Are you sure you want to remove your profile picture?')) {
+            document.getElementById('remove_picture').value = 'true';
+            
+            const previewImg = document.getElementById('preview-image');
+            const placeholder = document.getElementById('preview-placeholder');
+            
+            if (placeholder) {
+                placeholder.classList.remove('hidden');
+            }
+            previewImg.classList.add('hidden');
+            previewImg.src = '';
+            
+            // Clear file input
+            document.getElementById('profile_picture').value = '';
+        }
+    }
+
+    // Form validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const email = document.getElementById('email').value;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        
+        if (!emailRegex.test(email)) {
+            e.preventDefault();
+            alert('Please enter a valid email address');
+            return false;
+        }
+
+        // Validate URLs if provided
+        const urls = ['website', 'social_x', 'social_github'];
+        const urlRegex = /^https?:\/\/.+/;
+        
+        for (let urlField of urls) {
+            const value = document.getElementById(urlField).value;
+            if (value && !urlRegex.test(value)) {
+                e.preventDefault();
+                alert(`Please enter a valid URL for ${urlField.replace('_', ' ')} (must start with http:// or https://)`);
+                return false;
+            }
+        }
+    });
+</script>
+{% endblock %}

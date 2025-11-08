@@ -1,0 +1,175 @@
+{% extends 'base_profile.html' %}
+{% load static %}
+
+{% block title %}{{ user.username }}'s Profile{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Profile Header Card -->
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-8 fade-in">
+        <!-- Cover Background -->
+        <div class="gradient-bg h-48 relative">
+            <div class="absolute inset-0 bg-black opacity-10"></div>
+        </div>
+        
+        <!-- Profile Content -->
+        <div class="relative px-6 pb-8">
+            <!-- Profile Picture -->
+            <div class="flex flex-col sm:flex-row items-center sm:items-end -mt-20 mb-6">
+                <div class="profile-image-container w-40 h-40 rounded-full border-4 border-white shadow-xl bg-white overflow-hidden">
+                    {% if author.profile_picture %}
+                        <img src="{{ author.profile_picture.url }}" alt="{{ user.username }}" class="w-full h-full object-cover">
+                    {% else %}
+                        <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600">
+                            <span class="text-6xl font-bold text-white">{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- User Info & Actions -->
+                <div class="sm:ml-6 mt-4 sm:mt-0 flex-1 text-center sm:text-left">
+                    <h1 class="text-3xl font-bold text-gray-900">{{ user.first_name }} {{ user.last_name }}</h1>
+                    <p class="text-gray-500 text-lg">@{{ user.username }}</p>
+                    {% if author.profession %}
+                        <p class="text-indigo-600 font-medium mt-1">
+                            <i class="fas fa-briefcase mr-2"></i>{{ author.profession }}
+                        </p>
+                    {% endif %}
+                </div>
+                
+                <div class="mt-4 sm:mt-0">
+                    <a href="{% url 'edit_profile' user.id %}" class="inline-flex items-center px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                        <i class="fas fa-edit mr-2"></i>Edit Profile
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Bio -->
+            {% if author.bio %}
+            <div class="mb-6">
+                <p class="text-gray-700 text-lg leading-relaxed">{{ author.bio }}</p>
+            </div>
+            {% endif %}
+            
+            <!-- Contact & Social Links -->
+            <div class="flex flex-wrap gap-4 items-center">
+                <div class="flex items-center text-gray-600">
+                    <i class="fas fa-envelope mr-2 text-indigo-600"></i>
+                    <span>{{ user.email }}</span>
+                </div>
+                
+                {% if author.website %}
+                <a href="{{ author.website }}" target="_blank" class="flex items-center text-gray-600 hover:text-indigo-600 transition">
+                    <i class="fas fa-globe mr-2"></i>
+                    <span>Website</span>
+                </a>
+                {% endif %}
+                
+                {% if author.social_x %}
+                <a href="{{ author.social_x }}" target="_blank" class="flex items-center text-gray-600 hover:text-black transition">
+                    <i class="fab fa-x-twitter mr-2"></i>
+                    <span>Twitter/X</span>
+                </a>
+                {% endif %}
+                
+                {% if author.social_github %}
+                <a href="{{ author.social_github }}" target="_blank" class="flex items-center text-gray-600 hover:text-gray-900 transition">
+                    <i class="fab fa-github mr-2"></i>
+                    <span>GitHub</span>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="stat-card rounded-xl p-6 shadow-md card-hover fade-in">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm font-medium">Total Blogs</p>
+                    <h3 class="text-4xl font-bold text-gray-900 mt-2">{{ total_blogs }}</h3>
+                </div>
+                <div class="bg-indigo-100 rounded-full p-4">
+                    <i class="fas fa-blog text-3xl text-indigo-600"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stat-card rounded-xl p-6 shadow-md card-hover fade-in" style="animation-delay: 0.1s;">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm font-medium">Member Since</p>
+                    <h3 class="text-2xl font-bold text-gray-900 mt-2">{{ user.date_joined|date:"M Y" }}</h3>
+                </div>
+                <div class="bg-purple-100 rounded-full p-4">
+                    <i class="fas fa-calendar-alt text-3xl text-purple-600"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stat-card rounded-xl p-6 shadow-md card-hover fade-in" style="animation-delay: 0.2s;">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm font-medium">Last Active</p>
+                    <h3 class="text-2xl font-bold text-gray-900 mt-2">{{ user.last_login|date:"M d, Y" }}</h3>
+                </div>
+                <div class="bg-green-100 rounded-full p-4">
+                    <i class="fas fa-clock text-3xl text-green-600"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Blogs Section -->
+    <div class="bg-white rounded-2xl shadow-lg p-8 fade-in" style="animation-delay: 0.3s;">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">
+                <i class="fas fa-newspaper mr-3 text-indigo-600"></i>Recent Blogs
+            </h2>
+            {% if total_blogs > 0 %}
+            <a href="{% url 'my_blogs' %}" class="text-indigo-600 hover:text-indigo-700 font-medium flex items-center transition">
+                View All <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+            {% endif %}
+        </div>
+        
+        {% if blogs %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for blog in blogs %}
+            <div class="border border-gray-200 rounded-xl overflow-hidden hover:shadow-xl transition duration-300 card-hover">
+                <div class="bg-gradient-to-br from-indigo-500 to-purple-600 h-32 relative">
+                    <div class="absolute inset-0 bg-black opacity-20"></div>
+                    <div class="absolute bottom-4 left-4">
+                        <span class="bg-white text-indigo-600 px-3 py-1 rounded-full text-xs font-semibold">
+                            <i class="fas fa-video mr-1"></i>From YouTube
+                        </span>
+                    </div>
+                </div>
+                <div class="p-5">
+                    <h3 class="font-bold text-gray-900 text-lg mb-2 line-clamp-2">{{ blog.title }}</h3>
+                    <p class="text-gray-500 text-sm mb-4">
+                        <i class="far fa-calendar mr-2"></i>{{ blog.created_at|date:"M d, Y" }}
+                    </p>
+                    <a href="{% url 'blog_detail' blog.id %}" class="inline-flex items-center text-indigo-600 hover:text-indigo-700 font-medium transition">
+                        Read More <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-16">
+            <div class="inline-block bg-gray-100 rounded-full p-6 mb-4">
+                <i class="fas fa-inbox text-6xl text-gray-400"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">No blogs yet</h3>
+            <p class="text-gray-500 mb-6">Start creating amazing content from YouTube videos!</p>
+            <a href="{% url 'index' %}" class="inline-flex items-center px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg shadow-md transition">
+                <i class="fas fa-plus mr-2"></i>Create Your First Blog
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block extra_head %}
+<script src="https://cdn.tiny.cloud/1/5zismwflncxoet3wv88abme83r6m15kj1lcjzla9ylnjvdz6/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+  tinymce.init({
+    selector: '#content',
+    height: 600,
+    menubar: true,
+    plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table help wordcount',
+    toolbar: 'undo redo | formatselect | bold italic backcolor | \
+              alignleft aligncenter alignright alignjustify | \
+              bullist numlist outdent indent | removeformat | help',
+  });
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-12 px-6">
+  <h1 class="text-3xl font-bold text-gray-900 mb-6">Edit Blog</h1>
+
+  <form method="POST">
+    {% csrf_token %}
+    <div class="mb-6">
+      <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+      <input
+        type="text"
+        name="title"
+        value="{{ blog.title }}"
+        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+      />
+    </div>
+
+    <div class="mb-6">
+      <label class="block text-sm font-medium text-gray-700 mb-2">Content</label>
+      <textarea id="content" name="content" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+        {{ blog.content|safe }}
+      </textarea>
+    </div>
+
+    <div class="flex gap-4">
+      <button
+        type="submit"
+        class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+      >
+        Save Changes
+      </button>
+      <a href="{% url 'blog_detail' blog.id %}" class="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-100">
+        Cancel
+      </a>
+    </div>
+  </form>
+</div>
+{% endblock %}

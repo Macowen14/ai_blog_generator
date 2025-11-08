@@ -1,0 +1,17 @@
+# Virtual environment
+venv/
+.vscode/
+
+# IDE settings
+.vscode/
+.idea/
+
+# OS-specific junk
+.DS_Store
+Thumbs.db
+
+cookies.txt
+
+ai_blog_app/.env
+
+.env
