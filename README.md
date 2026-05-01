@@ -1,20 +1,3 @@
-Perfect! I’ve created a **fully updated README** that includes:
-
-* Project overview and features
-* Prerequisites
-* Local setup
-* **Docker setup with ready-to-use PostgreSQL + Django Compose configuration**
-* Development notes, known issues, contributing, license, author, and credits
-
-This is a **complete single file you can copy directly**.
-
----
-
-````markdown
-========================================
-AI BLOG GENERATOR - README
-========================================
-
 PROJECT OVERVIEW
 ----------------------------------------
 AI Blog Generator is a Django-based web application that allows users to
